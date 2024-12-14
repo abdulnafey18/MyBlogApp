@@ -1,0 +1,15 @@
+one:
+  title: "My First Blog Post"
+  content: "This is the content of my first blog post."
+  category: "Technology"
+  published: true
+  created_at: <%= Time.now - 1.day %>
+  updated_at: <%= Time.now - 1.day %>
+
+two:
+  title: "Another Blog Post"
+  content: "This is some more content for another post."
+  category: "Business"
+  published: false
+  created_at: <%= Time.now - 2.days %>
+  updated_at: <%= Time.now - 2.days %>
