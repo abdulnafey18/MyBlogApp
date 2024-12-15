@@ -29,12 +29,6 @@ jobs:
           ruby-version: "3.3.5"
           bundler-cache: true
 
-      - name: Install Node.js and Yarn
-        uses: actions/setup-node@v3
-        with:
-          node-version: "18"
-          cache: yarn
-
       - name: Install PostgreSQL client
         run: sudo apt-get update && sudo apt-get install postgresql-client -y
 
