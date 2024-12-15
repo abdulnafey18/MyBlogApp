@@ -44,6 +44,7 @@ jobs:
           PGPASSWORD: password
           RAILS_ENV: test
         run: |
+          psql -U rails -h localhost -d postgres -tc "SELECT 1 FROM pg_database WHERE datname = 'rails_test'" | grep -q 1 || \
           psql -U rails -h localhost -d postgres -c "CREATE DATABASE rails_test;"
           bundle exec rails db:environment:set RAILS_ENV=test
           bundle exec rails db:schema:load
