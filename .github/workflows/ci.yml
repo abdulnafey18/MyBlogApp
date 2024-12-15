@@ -11,7 +11,7 @@ jobs:
     runs-on: ubuntu-latest
     services:
       postgres:
-        image: postgres:11-alpine
+        image: postgres:14-alpine
         ports:
           - "5432:5432"
         env:
@@ -32,11 +32,20 @@ jobs:
       - name: Install PostgreSQL client
         run: sudo apt-get update && sudo apt-get install postgresql-client -y
 
+      - name: Wait for PostgreSQL
+        run: |
+          until pg_isready -h localhost -p 5432 -U rails; do
+            echo "Waiting for PostgreSQL to be ready..."
+            sleep 2
+          done
+
       - name: Set up database
         env:
           PGPASSWORD: password
+          RAILS_ENV: test
         run: |
-          psql -U rails -h localhost -c "CREATE DATABASE rails_test;"
+          psql -U rails -h localhost -d postgres -c "CREATE DATABASE rails_test;"
+          bundle exec rails db:environment:set RAILS_ENV=test
           bundle exec rails db:schema:load
 
       - name: Run tests
