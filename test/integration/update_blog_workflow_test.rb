@@ -1,4 +1,4 @@
-require 'test_helper'
+require "test_helper"
 
 class UpdateBlogWorkflowTest < ActionDispatch::IntegrationTest
   # Setup: Create a blog post to be updated in the test

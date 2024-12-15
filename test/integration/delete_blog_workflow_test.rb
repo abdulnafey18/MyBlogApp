@@ -1,4 +1,4 @@
-require 'test_helper'
+require "test_helper"
 
 class DeleteBlogWorkflowTest < ActionDispatch::IntegrationTest
   # Setup: Create a blog post to be deleted in the test
@@ -14,7 +14,7 @@ class DeleteBlogWorkflowTest < ActionDispatch::IntegrationTest
   test "should delete the blog post and verify its removal" do
     # Send a DELETE request to remove the specific blog post
     delete "/blog_posts/#{@blog_post.id}", as: :json
-    
+
     # Assert that the response status is :no_content (204)
     assert_response :no_content
 

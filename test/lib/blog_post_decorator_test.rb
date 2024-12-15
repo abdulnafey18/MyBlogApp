@@ -1,5 +1,5 @@
-require 'test_helper'
-require 'blog_post_decorator'
+require "test_helper"
+require "blog_post_decorator"
 
 class BlogPostDecoratorTest < ActiveSupport::TestCase
   # Setup: Create a test blog post and initialize the decorator

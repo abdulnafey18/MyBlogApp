@@ -1,4 +1,4 @@
-require 'words_counted'
+require "words_counted"
 
 class BlogPostDecorator
   # Define category keywords for auto classification
@@ -18,7 +18,7 @@ class BlogPostDecorator
   # Calculate the number of words in the content
   def word_count
     # Remove non-alphabetic characters and count words
-    clean_content = @blog_post.content.gsub(/[^a-zA-Z\s]/, '').strip
+    clean_content = @blog_post.content.gsub(/[^a-zA-Z\s]/, "").strip
     clean_content.split(/\s+/).size
   end
 
@@ -29,9 +29,9 @@ class BlogPostDecorator
 
   # Generate a summary by taking the first 2-3 sentences
   def summary
-    sentences = @blog_post.content.split('. ')
+    sentences = @blog_post.content.split(". ")
     # Add ellipsis if there are more than 2 sentences
-    sentences[0..1].join('. ') + (sentences.size > 2 ? '...' : '')
+    sentences[0..1].join(". ") + (sentences.size > 2 ? "..." : "")
   end
 
   # Automatically assign a category based on content keywords

@@ -1,11 +1,11 @@
-require 'test_helper'
+require "test_helper"
 
 class CreateBlogWorkflowTest < ActionDispatch::IntegrationTest
   # Test for creating a new blog post and verifying its attributes
   test "should try to create a new blog post with additional functionality" do
     # Send a POST request to the create action with JSON payload
     post "/blog_posts", params: { blog_post: { title: "New Blog Post", content: "This is a test blog post content.", published: true } }, as: :json
-    
+
     # Validate the response status is :created (201)
     assert_response :created
 

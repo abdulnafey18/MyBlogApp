@@ -1,4 +1,4 @@
-require 'test_helper'
+require "test_helper"
 
 class BlogPostTest < ActiveSupport::TestCase
   setup do
@@ -9,7 +9,7 @@ class BlogPostTest < ActiveSupport::TestCase
 
   # Test saving a blog post (new record, if needed)
   test "should save blog post" do
-    assert_difference('BlogPost.count', 1) do
+    assert_difference("BlogPost.count", 1) do
       BlogPost.create(
         title: "Fixture Test Blog",
         content: "This is a blog post created to test saving functionality.",
@@ -30,7 +30,7 @@ class BlogPostTest < ActiveSupport::TestCase
 
   # Test deleting a blog post
   test "should delete blog post" do
-    assert_difference('BlogPost.count', -1) do
+    assert_difference("BlogPost.count", -1) do
       @fixture_post_one.destroy
     end
   end

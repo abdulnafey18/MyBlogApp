@@ -24,15 +24,15 @@ class BlogPostsTest < ApplicationSystemTestCase
   test "should create blog post" do
     visit "/"
     click_on "New Blog Post"
-  
+
     fill_in "title", with: "Test Blog Post"
     fill_in "content", with: "This is a test blog post content."
     check "Published"
     click_on "Save"
-  
+
     # Navigate back to the blog list
     visit "/"
-  
+
     # Assertions for the created post
     assert_text "Test Blog Post"
     assert_text "This is a test blog post content."
@@ -66,5 +66,4 @@ class BlogPostsTest < ApplicationSystemTestCase
     # Assertions for deletion
     assert_no_text @blog_post.title # Ensure the blog post is no longer listed
   end
-
 end
