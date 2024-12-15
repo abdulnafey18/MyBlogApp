@@ -33,6 +33,8 @@ jobs:
         run: sudo apt-get update && sudo apt-get install postgresql-client -y
 
       - name: Set up database
+        env:
+          PGPASSWORD: password
         run: |
           psql -U rails -h localhost -c "CREATE DATABASE rails_test;"
           bundle exec rails db:schema:load
