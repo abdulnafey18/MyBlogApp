@@ -1,20 +1,12 @@
-default: &default
-  adapter: <%= ENV["DB_ADAPTER"] || "sqlite3" %>
-  pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
-  timeout: 5000
-
-development:
-  <<: *default
-  database: db/development.sqlite3
-
-test:
-  <<: *default
-  adapter: postgresql
-  database: rails_test
-  username: rails
-  password: password
-  host: localhost
-
-production:
-  <<: *default
-  database: db/production.sqlite3
+version: 2
+updates:
+- package-ecosystem: bundler
+  directory: "/"
+  schedule:
+    interval: daily
+  open-pull-requests-limit: 10
+- package-ecosystem: github-actions
+  directory: "/"
+  schedule:
+    interval: daily
+  open-pull-requests-limit: 10
