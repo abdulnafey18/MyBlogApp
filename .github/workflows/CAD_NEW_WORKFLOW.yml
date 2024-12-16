@@ -30,25 +30,23 @@ jobs:
             set -e
             cd /home/ubuntu/MyBlogApp
 
-            # Install Bundler locally without requiring sudo
+            # Install Bundler using sudo
             if ! command -v bundle &> /dev/null; then
               echo "Installing Bundler..."
-              gem install --user-install bundler --no-document
-              export PATH="$HOME/.gem/ruby/3.2.0/bin:$PATH"
+              sudo gem install bundler --no-document
             fi
 
-            # Ensure Bundler is in the PATH
-            export PATH="$HOME/.gem/ruby/3.2.0/bin:$PATH"
+            # Ensure Bundler and dependencies are available
+            sudo bundle install --path vendor/bundle
 
-            # Pull repository and install dependencies
+            # Pull latest changes from the repository
             git pull origin main
-            bundle install --path vendor/bundle
 
-            # Run static analysis and migrations
-            bundle exec bundle audit --update
-            bundle exec brakeman -q -w2
-            bundle exec rubocop --auto-correct-all --disable-uncorrectable
-            bundle exec rails db:migrate
+            # Run security checks, linters, and database migrations
+            sudo bundle exec bundle audit --update
+            sudo bundle exec brakeman -q -w2
+            sudo bundle exec rubocop --auto-correct-all --disable-uncorrectable
+            sudo bundle exec rails db:migrate
 
             echo "Deployment Complete!"
           EOF
