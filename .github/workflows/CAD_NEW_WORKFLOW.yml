@@ -28,39 +28,44 @@ jobs:
         run: |
           ssh -o StrictHostKeyChecking=no -i myKey.pem ubuntu@44.221.25.174 << 'EOF'
             set -e
-            # Update package list and install dependencies
+
+            # Update system packages and install required dependencies
             sudo apt-get update -y
             sudo apt-get install -y ruby-dev build-essential libssl-dev zlib1g-dev
 
             # Navigate to the application directory
             cd /home/ubuntu/MyBlogApp
 
-            # Clean up existing bundle directory to fix permissions
+            # Clean up existing bundle directory to fix potential permission issues
             sudo rm -rf vendor/bundle
 
             # Pull the latest changes from the repository
             git pull origin main
 
-            # Install Bundler if not already installed
+            # Ensure Bundler is installed
             if ! command -v bundle &> /dev/null; then
               echo "Installing Bundler..."
-              gem install bundler --no-document
+              sudo gem install bundler --no-document
             fi
 
-            # Configure bundler to install locally
+            # Configure Bundler to use a local installation path
             bundle config set --local path 'vendor/bundle'
 
             # Install application dependencies
-            bundle install --jobs=4
+            echo "Installing application dependencies..."
+            bundle install --jobs=4 --without development test
 
-            # Run security checks and linters
+            # Run security checks and code quality tools
+            echo "Running security checks and code quality tools..."
             bundle exec bundle audit --update
             bundle exec brakeman -q -w2
             bundle exec rubocop --auto-correct-all --disable-uncorrectable
 
-            # Migrate the database
+            # Run database migrations
+            echo "Running database migrations..."
             bundle exec rails db:migrate
 
+            # Confirm deployment completion
             echo "Deployment Complete!"
           EOF
 
