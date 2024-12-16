@@ -48,24 +48,24 @@ jobs:
               sudo gem install bundler --no-document
             fi
 
-            # Configure Bundler to use a local installation path
+            # Configure Bundler
             bundle config set --local path 'vendor/bundle'
+            bundle config set without 'development test'
 
             # Install application dependencies
             echo "Installing application dependencies..."
-            bundle install --jobs=4 --without development test
+            bundle install --jobs=4
 
-            # Run security checks and code quality tools
+            # Run security checks and linters
             echo "Running security checks and code quality tools..."
             bundle exec bundle audit --update
             bundle exec brakeman -q -w2
             bundle exec rubocop --auto-correct-all --disable-uncorrectable
 
-            # Run database migrations
+            # Migrate the database
             echo "Running database migrations..."
             bundle exec rails db:migrate
 
-            # Confirm deployment completion
             echo "Deployment Complete!"
           EOF
 
