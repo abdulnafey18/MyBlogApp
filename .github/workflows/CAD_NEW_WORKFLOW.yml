@@ -16,13 +16,13 @@ jobs:
       - name: Set up Environment Variables
         env:
           #These are github secrets.
-          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+          SSH_PRIVATE_KEY: ${{ secrets.SSH_SECRET_KEY }}
           
           
         run: |
           # We know this script will be ran on a GitHub VM (ubuntu latest), allows to create a myKey.pem file by echoing the value kept as a gitgub secret. 
           # Save the SSH private key and set the permissions
-          echo "$SSH_PRIVATE_KEY" > myKey.pem
+          echo "$SSH_SECRET_KEY" > myKey.pem
           chmod 600 myKey.pem
 
       - name: Deploy to EC2
