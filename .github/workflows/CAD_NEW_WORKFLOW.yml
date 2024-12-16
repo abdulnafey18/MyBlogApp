@@ -20,7 +20,7 @@ jobs:
           
           
         run: |
-          # We know this script will be ran on a GitHub VM (ubuntu latest), allows to create a KeyTwo.pem file by echoing the value kept as a gitgub secret. 
+          # We know this script will be ran on a GitHub VM (ubuntu latest), allows to create a myKey.pem file by echoing the value kept as a gitgub secret. 
           # Save the SSH private key and set the permissions
           echo "$SSH_PRIVATE_KEY" > myKey.pem
           chmod 600 myKey.pem
@@ -33,7 +33,7 @@ jobs:
           PUBLIC_IP=44.221.25.174 
 
           # SSH into the EC2 instance
-          ssh -o StrictHostKeyChecking=no -i KeyTwo.pem ubuntu@$PUBLIC_IP << 'EOF'
+          ssh -o StrictHostKeyChecking=no -i myKey.pem ubuntu@$PUBLIC_IP << 'EOF'
             # Exit if error occurs
             set -e
             # Navigate to pRecipe App directory
