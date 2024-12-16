@@ -29,13 +29,24 @@ jobs:
           ssh -o StrictHostKeyChecking=no -i myKey.pem ubuntu@44.221.25.174 << 'EOF'
             set -e
             cd /home/ubuntu/MyBlogApp
+            
+            # Install Ruby and Bundler if not already installed
+            if ! command -v bundle &> /dev/null; then
+              echo "Installing Bundler..."
+              gem install bundler --no-document
+            fi
+
+            # Ensure dependencies are installed
             git pull origin main
             bundle install
+
+            # Run static analysis and migration
             bundle binstubs bundler-audit brakeman rubocop
             bundle exec bundle audit --update
             bundle exec brakeman -q -w2
             bundle exec rubocop --auto-correct-all --disable-uncorrectable
             rails db:migrate
+
             echo "Deployment Complete!"
           EOF
 
