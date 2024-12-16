@@ -28,21 +28,40 @@ jobs:
         run: |
           ssh -o StrictHostKeyChecking=no -i myKey.pem ubuntu@44.221.25.174 << 'EOF'
             set -e
+            # Update package list and install dependencies
+            sudo apt-get update -y
+            sudo apt-get install -y ruby-dev build-essential libssl-dev zlib1g-dev
+
+            # Navigate to the application directory
             cd /home/ubuntu/MyBlogApp
 
-            # Navigate to pRecipe App directory
-            cd /home/ubuntu/MyBlogApp
-            # Pull repository state to vm
+            # Clean up existing bundle directory to fix permissions
+            sudo rm -rf vendor/bundle
+
+            # Pull the latest changes from the repository
             git pull origin main
-            # Install dependencies, migrate the database, and Start the application
-            # When the application would start - the workflow would run until the rails server was terminated.
-            bundle install
-            bundle binstubs bundler-audit brakeman rubocop
+
+            # Install Bundler if not already installed
+            if ! command -v bundle &> /dev/null; then
+              echo "Installing Bundler..."
+              gem install bundler --no-document
+            fi
+
+            # Configure bundler to install locally
+            bundle config set --local path 'vendor/bundle'
+
+            # Install application dependencies
+            bundle install --jobs=4
+
+            # Run security checks and linters
             bundle exec bundle audit --update
             bundle exec brakeman -q -w2
             bundle exec rubocop --auto-correct-all --disable-uncorrectable
-            rails db:migrate
-            #RAILS_ENV=production sudo /home/ubuntu/.rbenv/shims/rails server --binding 0.0.0.0 --port 80
+
+            # Migrate the database
+            bundle exec rails db:migrate
+
+            echo "Deployment Complete!"
           EOF
 
       - name: Clean up
