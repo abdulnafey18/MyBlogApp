@@ -36,10 +36,10 @@ jobs:
           ssh -o StrictHostKeyChecking=no -i myKey.pem ubuntu@$PUBLIC_IP << 'EOF'
             # Exit if error occurs
             set -e
-            # Navigate to pRecipe App directory
+            # Navigate to MyBlogApp directory
             cd /home/ubuntu/MyBlogApp
             # Pull repository state to vm
-            git pull origin master
+            git pull origin main
             # Install dependencies, migrate the database, and Start the application
             # When the application would start - the workflow would run until the rails server was terminated.
             bundle install
