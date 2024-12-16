@@ -30,25 +30,19 @@ jobs:
             set -e
             cd /home/ubuntu/MyBlogApp
 
-            # Install Bundler using sudo
-            if ! command -v bundle &> /dev/null; then
-              echo "Installing Bundler..."
-              sudo gem install bundler --no-document
-            fi
-
-            # Ensure Bundler and dependencies are available
-            sudo bundle install --path vendor/bundle
-
-            # Pull latest changes from the repository
+            # Navigate to pRecipe App directory
+            cd /home/ubuntu/MyBlogApp
+            # Pull repository state to vm
             git pull origin main
-
-            # Run security checks, linters, and database migrations
-            sudo bundle exec bundle audit --update
-            sudo bundle exec brakeman -q -w2
-            sudo bundle exec rubocop --auto-correct-all --disable-uncorrectable
-            sudo bundle exec rails db:migrate
-
-            echo "Deployment Complete!"
+            # Install dependencies, migrate the database, and Start the application
+            # When the application would start - the workflow would run until the rails server was terminated.
+            bundle install
+            bundle binstubs bundler-audit brakeman rubocop
+            bundle exec bundle audit --update
+            bundle exec brakeman -q -w2
+            bundle exec rubocop --auto-correct-all --disable-uncorrectable
+            rails db:migrate
+            #RAILS_ENV=production sudo /home/ubuntu/.rbenv/shims/rails server --binding 0.0.0.0 --port 80
           EOF
 
       - name: Clean up
