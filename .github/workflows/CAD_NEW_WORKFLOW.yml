@@ -13,45 +13,32 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      - name: Set up Environment Variables
+      - name: Set up SSH Key
         env:
-          #These are github secrets.
           SSH_PRIVATE_KEY: ${{ secrets.SSH_SECRET_KEY }}
-          
-          
         run: |
-          # We know this script will be ran on a GitHub VM (ubuntu latest), allows to create a myKey.pem file by echoing the value kept as a gitgub secret. 
-          # Save the SSH private key and set the permissions
-          echo "$SSH_SECRET_KEY" > myKey.pem
+          echo "${SSH_PRIVATE_KEY}" > myKey.pem
           chmod 600 myKey.pem
+
+      - name: Test SSH Connection
+        run: |
+          ssh -o StrictHostKeyChecking=no -i myKey.pem ubuntu@44.221.25.174 "echo Connected Successfully!"
 
       - name: Deploy to EC2
         run: |
-          # Define EC2 instance details
-          INSTANCE_ID="i-067ee7794064c2eda" 
-          # An elastic IP was allocated to the EC2 instance
-          PUBLIC_IP=44.221.25.174 
-
-          # SSH into the EC2 instance
-          ssh -o StrictHostKeyChecking=no -i myKey.pem ubuntu@$PUBLIC_IP << 'EOF'
-            # Exit if error occurs
+          ssh -o StrictHostKeyChecking=no -i myKey.pem ubuntu@44.221.25.174 << 'EOF'
             set -e
-            # Navigate to MyBlogApp directory
             cd /home/ubuntu/MyBlogApp
-            # Pull repository state to vm
             git pull origin main
-            # Install dependencies, migrate the database, and Start the application
-            # When the application would start - the workflow would run until the rails server was terminated.
             bundle install
             bundle binstubs bundler-audit brakeman rubocop
             bundle exec bundle audit --update
             bundle exec brakeman -q -w2
             bundle exec rubocop --auto-correct-all --disable-uncorrectable
             rails db:migrate
-            #RAILS_ENV=production sudo /home/ubuntu/.rbenv/shims/rails server --binding 0.0.0.0 --port 80
+            echo "Deployment Complete!"
           EOF
 
       - name: Clean up
         run: |
-          # Remove the private key after use
           rm -f myKey.pem
