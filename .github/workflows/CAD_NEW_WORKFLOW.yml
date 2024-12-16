@@ -28,46 +28,37 @@ jobs:
         run: |
           ssh -o StrictHostKeyChecking=no -i myKey.pem ubuntu@44.221.25.174 << 'EOF'
             set -e
-            
-            # Update system packages and install required dependencies
+            # Update package list and install dependencies
             sudo apt-get update -y
             sudo apt-get install -y ruby-dev build-essential libssl-dev zlib1g-dev
 
             # Navigate to the application directory
             cd /home/ubuntu/MyBlogApp
 
-            # Ensure proper ownership of the directory and its contents
-            sudo chown -R ubuntu:ubuntu /home/ubuntu/MyBlogApp
-
-            # Clean up existing bundle directory to fix potential permission issues
+            # Clean up existing bundle directory to fix permissions
             sudo rm -rf vendor/bundle
 
             # Pull the latest changes from the repository
             git pull origin main
 
-            # Ensure Bundler is installed
+            # Install Bundler if not already installed
             if ! command -v bundle &> /dev/null; then
               echo "Installing Bundler..."
-              sudo gem install bundler --no-document
+              gem install bundler --no-document
             fi
 
-            # Configure Bundler
-            echo "Configuring Bundler..."
+            # Configure bundler to install locally
             bundle config set --local path 'vendor/bundle'
-            bundle config set --local without 'development test'
 
             # Install application dependencies
-            echo "Installing application dependencies..."
             bundle install --jobs=4
 
             # Run security checks and linters
-            echo "Running security checks and code quality tools..."
             bundle exec bundle audit --update
             bundle exec brakeman -q -w2
             bundle exec rubocop --auto-correct-all --disable-uncorrectable
 
             # Migrate the database
-            echo "Running database migrations..."
             bundle exec rails db:migrate
 
             echo "Deployment Complete!"
