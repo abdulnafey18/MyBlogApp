@@ -30,7 +30,7 @@ jobs:
           # Define EC2 instance details
           INSTANCE_ID="i-067ee7794064c2eda" 
           # An elastic IP was allocated to the EC2 instance
-          PUBLIC_IP=3.93.163.218 
+          PUBLIC_IP=44.221.25.174 
 
           # SSH into the EC2 instance
           ssh -o StrictHostKeyChecking=no -i KeyTwo.pem ubuntu@$PUBLIC_IP << 'EOF'
