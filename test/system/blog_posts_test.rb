@@ -1,69 +1,60 @@
 require "application_system_test_case"
 
 class BlogPostsTest < ApplicationSystemTestCase
+  driven_by :selenium, using: :headless_chrome
+
+  # Setup: Create a sample blog post for tests
   setup do
     @blog_post = BlogPost.create!(
-      title: "My First Blog Post",
-      content: "This is the content of my first blog post.",
-      category: "Technology",
-      published: true,
-      created_at: Time.now - 1.day,
-      updated_at: Time.now - 1.day
+      title: "Test Blog",
+      content: "This is a sample blog post content.",
+      published: true
     )
-    puts "Created blog post with ID: #{@blog_post.id}" # Debug output
-    Capybara.app_host = "http://localhost:3000"
   end
 
-  # Test visiting the index
-  test "visiting the index" do
-    visit "/" # Navigate to the blog posts index
-    assert_selector "h1", text: "Blog Posts" # Match the header text
+  # Test visiting the blog posts index page
+  test "visiting the blog posts index" do
+    visit "/"
+    assert_selector "h1", text: "Blog Posts"
   end
 
-  # Test creating a blog post
-  test "should create blog post" do
+  # Test creating a new blog post
+  test "creating a new blog post" do
     visit "/"
     click_on "New Blog Post"
 
-    fill_in "title", with: "Test Blog Post"
-    fill_in "content", with: "This is a test blog post content."
+    fill_in "Title", with: "New Blog Post Title"
+    fill_in "Content", with: "This is the content of the new blog post."
     check "Published"
     click_on "Save"
 
-    # Navigate back to the blog list
-    visit "/"
-
-    # Assertions for the created post
-    assert_text "Test Blog Post"
-    assert_text "This is a test blog post content."
+    assert_text "New Blog Post Title"
+    assert_text "This is the content of the new blog post."
     assert_text "Published: Yes"
   end
 
-  # Test updating a blog post
-  test "should update blog post" do
-    visit "/" # Navigate to the blog posts index
-    click_on "Show", match: :first # Open the show page for the first blog post
-    click_on "Edit" # Navigate to the edit page
+  # Test updating an existing blog post
+  test "updating an existing blog post" do
+    visit "/"
+    click_on "Show", match: :first
+    click_on "Edit"
 
-    fill_in "title", with: "Updated Blog Post Title"
-    fill_in "content", with: "Updated content for the blog post."
-    uncheck "Published" # Toggle the published checkbox
-    click_on "Save Changes" # Submit the form
+    fill_in "Title", with: "Updated Blog Post"
+    fill_in "Content", with: "Updated content for this blog post."
+    uncheck "Published"
+    click_on "Save Changes"
 
-    # Assertions for the updated blog post
-    visit "/" # Back to index
-    assert_text "Updated Blog Post Title"
-    assert_text "Updated content for the blog post."
+    assert_text "Updated Blog Post"
+    assert_text "Updated content for this blog post."
     assert_text "Published: No"
   end
 
   # Test destroying a blog post
-  test "should destroy blog post" do
-    visit "/" # Navigate to the blog posts index
-    click_on "Show", match: :first # Open the show page for the first blog post
-    click_on "Destroy" # Trigger the delete action
+  test "destroying a blog post" do
+    visit "/"
+    click_on "Show", match: :first
+    click_on "Destroy"
 
-    # Assertions for deletion
-    assert_no_text @blog_post.title # Ensure the blog post is no longer listed
+    refute_text @blog_post.title
   end
 end
