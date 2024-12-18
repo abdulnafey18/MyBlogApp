@@ -51,4 +51,18 @@ class BlogPostTest < ActiveSupport::TestCase
     @fixture_post_two.update(published: false)
     assert_not @fixture_post_two.published, "Expected blog post to be unpublished"
   end
+
+  # Test word count functionality
+  test "should calculate word count correctly" do
+    decorator = BlogPostDecorator.new(@fixture_post_one)
+    expected_word_count = @fixture_post_one.content.split(/\s+/).size
+    assert_equal expected_word_count, decorator.word_count
+  end
+
+  # Test reading time functionality
+  test "should calculate reading time correctly" do
+    decorator = BlogPostDecorator.new(@fixture_post_one)
+    expected_reading_time = (decorator.word_count / 200.0).ceil
+    assert_equal expected_reading_time, decorator.reading_time
+  end
 end

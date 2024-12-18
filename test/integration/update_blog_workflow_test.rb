@@ -1,7 +1,6 @@
 require "test_helper"
 
 class UpdateBlogWorkflowTest < ActionDispatch::IntegrationTest
-  # Setup: Create a blog post to be updated in the test
   setup do
     @blog_post = BlogPost.create!(
       title: "Original Title",
@@ -10,21 +9,19 @@ class UpdateBlogWorkflowTest < ActionDispatch::IntegrationTest
     )
   end
 
-  # Test for updating a blog post and verifying the changes
-  test "should update the blog post with new content and reflect changes" do
-    # Send a PATCH request to update the specific blog post
+  test "should update the blog post and verify changes" do
     patch "/blog_posts/#{@blog_post.id}",
-          params: { blog_post: { title: "Updated Title", content: "Updated content." } },
+          params: { blog_post: { title: "Updated Title", content: "Updated content with more words." } },
           as: :json
 
-    # Assert that the response status is :ok (200)
     assert_response :ok
-
-    # Parse the JSON response body
     json_response = JSON.parse(response.body)
 
-    # Assert that the blog post title and content are updated correctly
     assert_equal "Updated Title", json_response["title"]
-    assert_equal "Updated content.", json_response["content"]
+    assert_equal "Updated content with more words.", json_response["content"]
+
+    # Validate updated word count and reading time
+    assert_equal 5, json_response["word_count"] # Update based on word count logic
+    assert_equal "1 minute(s)", json_response["reading_time"] # Update if method changes
   end
 end
